@@ -16,13 +16,6 @@
     <body>
         <input id="fileselect" type="file" accept="image/*" capture="camera">
 
-        <!-- For devices that support getUserMedia and have a webcam we can display the feed in a video element -->
-        <div id="container">
-
-
-
-        </div>
-
         <!-- Selected image will be draw to a canvas -->
         <canvas id="canvas" width="500" height="375">
             <video autoplay id="videoElement"></video>
@@ -135,21 +128,21 @@
             // create file reader
             // var fr;
 
-            sel.addEventListener('change', function (e) {
-                var f = sel.files[0]; // get selected file (camera capture)
+            // sel.addEventListener('change', function (e) {
+            //     var f = sel.files[0]; // get selected file (camera capture)
 
-                fr = new FileReader();
-                fr.onload = receivedData; // add onload event
+            //     fr = new FileReader();
+            //     fr.onload = receivedData; // add onload event
 
-                fr.readAsDataURL(f); // get captured image as data URI
-            })
+            //     fr.readAsDataURL(f); // get captured image as data URI
+            // })
 
-            function receivedData() {
-                // readAsDataURL is finished - add URI to IMG tag src
-                imgtag.src = fr.result;
-            }
+            // function receivedData() {
+            //     // readAsDataURL is finished - add URI to IMG tag src
+            //     imgtag.src = fr.result;
+            // }
         </script>
-        <script src="impetus.js"></script>
+        <!-- <script src="impetus.js"></script>
         <script src="pinch.js"></script>
         <script>
             var pinchZoom = new PinchZoomCanvas({
@@ -166,7 +159,7 @@
                     console.log("---> zoom is %s", zoom);
                 }
             });
-        </script>
+        </script> -->
     </body>
 
 </html>
