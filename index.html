@@ -147,7 +147,24 @@
             //     imgtag.src = fr.result;
             // }
         </script>
-
+        <script src="impetus.js"></script>
+        <script src="pinch.js"></script>
+        <script>
+            var pinchZoom = new PinchZoomCanvas({
+                canvas: document.getElementById('canvas'),
+                path: "assets/test-image.png",
+                momentum: true,
+                zoomMax: 2,
+                doubletap: true,
+                onZoomEnd: function (zoom, zoomed) {
+                    console.log("---> is zoomed: %s", zoomed);
+                    console.log("---> zoom end at %s", zoom);
+                },
+                onZoom: function (zoom) {
+                    console.log("---> zoom is %s", zoom);
+                }
+            });
+        </script>
     </body>
 
 </html>
