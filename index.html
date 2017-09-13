@@ -5,16 +5,21 @@
     <meta charset="utf-8">
     <title>AR Sandbox</title>
     <meta name="description" content="360&deg; Image Gallery - A-Frame">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="format-detection" content="telephone=no">
-    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
-
-    <meta name="viewport" id="vp" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" />
     <script type="stylesheet" src="style.css"></script>
+
+    <!-- <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+    <script src="https://rawgit.com/flysonic10/aframe-passthrough/master/dist/aframe-passthrough-component.min.js"></script>
+</head> -->
 
     <body>
         <input id="fileselect" type="file" accept="image/*" capture="camera">
+
+        <!-- For devices that support getUserMedia and have a webcam we can display the feed in a video element -->
+        <div id="container">
+
+
+
+        </div>
 
         <!-- Selected image will be draw to a canvas -->
         <canvas id="canvas" width="500" height="375">
@@ -142,9 +147,9 @@
             //     imgtag.src = fr.result;
             // }
         </script>
-        <!-- <script src="impetus.js"></script>
-        <script src="pinch.js"></script>
-        <script>
+        <!-- <script src="impetus.js"></script> -->
+        <!-- <script src="pinch.js"></script> -->
+        <!-- <script>
             var pinchZoom = new PinchZoomCanvas({
                 canvas: document.getElementById('canvas'),
                 path: "assets/test-image.png",
