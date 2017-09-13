@@ -1,4 +1,19 @@
-img {
-    position: fixed;
-    top: 100px;
+#stage {
+    width: 500px;
+    height: 375px;
+    position: relative;
+    border: 2px solid black
+  }
+
+canvas { 
+    position: absolute;
+    background-color: transparent
+}
+
+#img-overlay {
+    z-index: 9999
+}
+
+#canvas {
+    z-index: 8000
 }

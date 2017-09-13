@@ -19,13 +19,12 @@
 
 
 
+            <video autoplay id="videoElement" style="display: none"></video>
         </div>
-
-        <!-- Selected image will be draw to a canvas -->
-        <canvas id="canvas" width="500" height="375">
-            <video autoplay id="videoElement"></video>
-        </canvas>
-
+        <div id="stage">
+            <canvas id="img-overlay" width="500" height="375"></canvas>
+            <canvas id="canvas" width="500" height="375"></canvas>
+        </div>
         <img id="overlay" style="display: none" src="assets/test-image.png" alt="">
         <!-- Used to capture frame from webcam video feed -->
         <input type="button" value="Save" id="save" />
@@ -147,11 +146,11 @@
             //     imgtag.src = fr.result;
             // }
         </script>
-        <!-- <script src="impetus.js"></script> -->
-        <!-- <script src="pinch.js"></script> -->
-        <!-- <script>
+        <script src="impetus.js"></script>
+        <script src="pinch.js"></script>
+        <script>
             var pinchZoom = new PinchZoomCanvas({
-                canvas: document.getElementById('canvas'),
+                canvas: document.getElementById('img-overlay'),
                 path: "assets/test-image.png",
                 momentum: true,
                 zoomMax: 2,
@@ -164,7 +163,7 @@
                     console.log("---> zoom is %s", zoom);
                 }
             });
-        </script> -->
+        </script>
     </body>
 
 </html>
