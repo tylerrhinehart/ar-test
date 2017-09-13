@@ -112,8 +112,8 @@
             if (e.scale < 1.0 && pinch) {
                 sizeX -= 4
                 sizeY -= 2
-                x += 2
-                y += 1
+                x += 4
+                y += 2
                 var overlay = document.getElementById('overlay')
                 context.clearRect(0, 0, 500, 375)
                 context.drawImage(overlay, x, y, sizeX, sizeY)
@@ -124,8 +124,8 @@
             } else if (e.scale > 1.0 && pinch) {
                 sizeX += 4
                 sizeY += 2
-                x -= 2
-                y -= 1
+                x -= 4
+                y -= 2
                 var overlay = document.getElementById('overlay')
                 context.clearRect(0, 0, 500, 375)
                 context.drawImage(overlay, x, y, sizeX, sizeY)
