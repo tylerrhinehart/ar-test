@@ -11,101 +11,134 @@
     <script src="https://rawgit.com/flysonic10/aframe-passthrough/master/dist/aframe-passthrough-component.min.js"></script> -->
 </head>
 
-    <body>
-        <input id="fileselect" type="file" accept="image/*" capture="camera">
+<body>
+    <video autoplay id="videoElement" style="display: none"></video>
+    <div id="stage">
+        <canvas id="canvas" width="500" height="375"></canvas>
+        <!-- <div id="container">
+            <canvas id="img-overlay"></canvas>
+        </div> -->
+    </div>
+    <img id="overlay" style="display: none" src="assets/test-image.png" alt="">
+    <!-- Used to capture frame from webcam video feed -->
+    <input type="button" value="Save" id="save" />
 
-        <!-- For devices that support getUserMedia and have a webcam we can display the feed in a video element -->
-        <div id="container">
+    <!-- Or alternatively added to an img tag -->
+    <img id="imgtag" src="" width="500" height="375" alt="capture" />
+    <!-- <img src="http://res.cloudinary.com/dvh7zccln/image/upload/v1504733715/14-tattoo-png-image_qd9leq.png" alt=""> -->
+    <script>
+        var video = document.querySelector("#videoElement");
 
+        // check for getUserMedia support
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
 
+        if (navigator.getUserMedia) {
+            // get webcam feed if available
+            navigator.getUserMedia({ video: true }, handleVideo, videoError);
+        }
 
-            <video autoplay id="videoElement" style="display: none"></video>
-        </div>
-        <div id="stage">
-            <canvas id="img-overlay" width="100" height="75"></canvas>
-            <canvas id="canvas" width="500" height="375"></canvas>
-        </div>
-        <img id="overlay" style="display: none" src="assets/test-image.png" alt="">
-        <!-- Used to capture frame from webcam video feed -->
-        <input type="button" value="Save" id="save" />
+        function handleVideo(stream) {
+            // if found attach feed to video element
+            video.src = window.URL.createObjectURL(stream);
+            update()
+            insertImage()
+        }
 
-        <!-- Or alternatively added to an img tag -->
-        <img id="imgtag" src="" width="500" height="375" alt="capture" />
-        <!-- <img src="http://res.cloudinary.com/dvh7zccln/image/upload/v1504733715/14-tattoo-png-image_qd9leq.png" alt=""> -->
-        <!-- <script src="move-image.js"></script> -->
-        <script>
-            var video = document.querySelector("#videoElement");
+        function videoError(e) {
+            // no webcam found - do something
+        }
+        var v, canvas, context, w, h;
+        var imgtag = document.getElementById('imgtag'); // get reference to img tag
+        var sel = document.getElementById('fileselect'); // get reference to file select input element
 
-            // check for getUserMedia support
-            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+        document.addEventListener('DOMContentLoaded', function () {
+            // when DOM loaded, get canvas 2D context and store width and height of element
+            v = document.getElementById('videoElement');
+            canvas = document.getElementById('canvas');
+            context = canvas.getContext('2d');
+            w = canvas.width;
+            h = canvas.height;
 
-            if (navigator.getUserMedia) {
-                // get webcam feed if available
-                navigator.getUserMedia({ video: true }, handleVideo, videoError);
-            }
+        }, false);
 
-            function handleVideo(stream) {
-                // if found attach feed to video element
-                video.src = window.URL.createObjectURL(stream);
-                update()
-                insertImage()
-            }
+        function draw(v, c, w, h) {
 
-            function videoError(e) {
-                // no webcam found - do something
-            }
-            var v, canvas, context, w, h;
-            var imgtag = document.getElementById('imgtag'); // get reference to img tag
-            var sel = document.getElementById('fileselect'); // get reference to file select input element
+            if (v.paused || v.ended) return false; // if no video, exit here
 
-            document.addEventListener('DOMContentLoaded', function () {
-                // when DOM loaded, get canvas 2D context and store width and height of element
-                v = document.getElementById('videoElement');
-                canvas = document.getElementById('canvas');
-                context = canvas.getContext('2d');
-                w = canvas.width;
-                h = canvas.height;
+            // context.drawImage(v, 0, 0, w, h); // draw video feed to canvas
 
-            }, false);
+            var uri = canvas.toDataURL("image/png"); // convert canvas to data URI
 
-            function draw(v, c, w, h) {
+            // console.log(uri); // uncomment line to log URI for testing
 
-                if (v.paused || v.ended) return false; // if no video, exit here
+            imgtag.src = uri; // add URI to IMG tag src
+        }
 
-                // context.drawImage(v, 0, 0, w, h); // draw video feed to canvas
+        document.getElementById('save').addEventListener('click', function (e) {
 
-                var uri = canvas.toDataURL("image/png"); // convert canvas to data URI
+            draw(v, context, w, h); // when save button is clicked, draw video feed to canvas
 
-                // console.log(uri); // uncomment line to log URI for testing
+        });
 
-                imgtag.src = uri; // add URI to IMG tag src
-            }
+        var canvas = document.getElementById('canvas')
+        var context = canvas.getContext("2d")
+        function update() {
+            context.drawImage(video, 0, 0, 500, 375)
+            requestAnimationFrame(update)
+        }
 
-            document.getElementById('save').addEventListener('click', function (e) {
+        function insertImage() {
+            var overlay = document.getElementById('overlay')
+            context.drawImage(overlay, x, y, sizeX, sizeY)
+            var image2 = new Image()
+            image2.src = "assets/test-image.png"
+            // context.drawImage(image2, 100, 100, 70, 50)
+            requestAnimationFrame(insertImage)
+        }
+        var dragging = false
+        var timeout = true
+        var pinch = false
+        var x = 250
+        var y = 150
+        var sizeX = 50
+        var sizeY = 37
 
-                draw(v, context, w, h); // when save button is clicked, draw video feed to canvas
-
-            });
-
-            var canvas = document.getElementById('canvas')
-            var context = canvas.getContext("2d")
-            function update() {
-                context.drawImage(video, 0, 0, 500, 375)
-                requestAnimationFrame(update)
-            }
-
-            function insertImage() {
+        document.getElementById('canvas').addEventListener('gesturestart', function (e) {
+            pinch = true
+            console.log(e)
+        })
+        document.getElementById('canvas').addEventListener('gesturechange', function (e) {
+            if (e.scale < 1.0 && pinch && timeout) {
+                sizeX -= 4
+                sizeY -= 2
+                x -= 2
+                y -= 1
                 var overlay = document.getElementById('overlay')
-                context.drawImage(overlay, x, y, 50, 37)
-                var image2 = new Image()
-                image2.src = "assets/test-image.png"
-                // context.drawImage(image2, 100, 100, 70, 50)
-                requestAnimationFrame(insertImage)
+                context.clearRect(0, 0, 500, 375)
+                context.drawImage(overlay, x, y, sizeX, sizeY)
+                timeout = false
+                setTimeout(function () {
+                    timeout = true
+                }, 1000 / 30)
+            } else if (e.scale > 1.0 && pinch && timeout) {
+                sizeX += 4
+                sizeY += 2
+                x += 2
+                y += 1
+                var overlay = document.getElementById('overlay')
+                context.clearRect(0, 0, 500, 375)
+                context.drawImage(overlay, x, y, sizeX, sizeY)
+                timeout = false
+                setTimeout(function () {
+                    timeout = true
+                }, 1000 / 30)
             }
-            var dragging = false
-            var timeout = true
-            var x = 250
-            var y = 150
+        })
+        document.getElementById('canvas').addEventListener('gestureend', function (e) {
+            pinch = false
+            console.log(e)
+        })
+
             // document.getElementById('canvas').addEventListener('mousedown', function (e) {
             //     dragging = true
             //     console.log(e)
@@ -145,10 +178,17 @@
             //     // readAsDataURL is finished - add URI to IMG tag src
             //     imgtag.src = fr.result;
             // }
-        </script>
-        <script src="impetus.js"></script>
-        <script src="pinch.js"></script>
-        <script>
+    </script>
+    <script src="img-touch-canvas.js"></script>
+    <script>
+        var gesturableImg = new ImgTouchCanvas({
+            canvas: document.getElementById('img-overlay'),
+            path: "assets/test-image.png"
+        });
+    </script>
+    <!-- <script src="impetus.js"></script>
+        <script src="pinch.js"></script> -->
+    <!-- <script>
             var pinchZoom = new PinchZoomCanvas({
                 canvas: document.getElementById('img-overlay'),
                 path: "assets/test-image.png",
@@ -156,14 +196,9 @@
                 zoomMax: 2,
                 doubletap: true,
                 onZoomEnd: function (zoom, zoomed) {
-                    console.log("---> is zoomed: %s", zoomed);
-                    console.log("---> zoom end at %s", zoom);
-                },
-                onZoom: function (zoom) {
-                    console.log("---> zoom is %s", zoom);
-                }
-            });
-        </script>
-    </body>
+                    console.log("is zoomed: %s", zoomed); console.log(" zoom end at %s", zoom); }, onZoom: function (zoom) { console.log(" zoom
+    is %s", zoom); } });
+    </script> -->
+</body>
 
 </html>
