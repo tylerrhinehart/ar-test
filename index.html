@@ -108,7 +108,7 @@
             console.log(e)
         })
         document.getElementById('canvas').addEventListener('gesturechange', function (e) {
-            if (e.scale < 1.0 && pinch && timeout) {
+            if (e.scale < 1.0 && pinch) {
                 sizeX -= 4
                 sizeY -= 2
                 x -= 2
@@ -120,7 +120,7 @@
                 setTimeout(function () {
                     timeout = true
                 }, 1000 / 30)
-            } else if (e.scale > 1.0 && pinch && timeout) {
+            } else if (e.scale > 1.0 && pinch) {
                 sizeX += 4
                 sizeY += 2
                 x += 2
@@ -179,13 +179,13 @@
             //     imgtag.src = fr.result;
             // }
     </script>
-    <script src="img-touch-canvas.js"></script>
-    <script>
+    <!-- <script src="img-touch-canvas.js"></script> -->
+    <!-- <script>
         var gesturableImg = new ImgTouchCanvas({
             canvas: document.getElementById('img-overlay'),
             path: "assets/test-image.png"
         });
-    </script>
+    </script> -->
     <!-- <script src="impetus.js"></script>
         <script src="pinch.js"></script> -->
     <!-- <script>
