@@ -103,41 +103,41 @@
         //     dragging = false
         // })
 
-            // for iOS 
+        // for iOS 
 
-            // create file reader
-            // var fr;
+        //     create file reader
+        var fr;
 
-            // sel.addEventListener('change', function (e) {
-            //     var f = sel.files[0]; // get selected file (camera capture)
+        sel.addEventListener('change', function (e) {
+            var f = sel.files[0]; // get selected file (camera capture)
 
-            //     fr = new FileReader();
-            //     fr.onload = receivedData; // add onload event
+            fr = new FileReader();
+            fr.onload = receivedData; // add onload event
 
-            //     fr.readAsDataURL(f); // get captured image as data URI
-            // })
+            fr.readAsDataURL(f); // get captured image as data URI
+        })
 
-            // function receivedData() {
-            //     // readAsDataURL is finished - add URI to IMG tag src
-            //     imgtag.src = fr.result;
-            // }
+        function receivedData() {
+            // readAsDataURL is finished - add URI to IMG tag src
+            imgtag.src = fr.result;
+        }
     </script>
     <script src="https://github.com/vash15/pinch-zoom-canvas/blob/master/demo/impetus.js"></script>
     <script src="https://github.com/vash15/pinch-zoom-canvas/blob/master/pinch-zoom-canvas.js"></script>
     <script>
-        var pinchZoom = new PinchZoomCanvas({
-            canvas: document.getElementById('canvas'),
-            path: "assets/test-image.png",
-            momentum: true,
-            zoomMax: 2,
-            doubletap: true,
-            onZoomEnd: function (zoom, zoomed) {
-                console.log("---> is zoomed: %s", zoomed);
-                console.log("---> zoom end at %s", zoom);
-            },
-            onZoom: function (zoom) {
-                console.log("---> zoom is %s", zoom);
-            }
-        });
+            var pinchZoom = new PinchZoomCanvas({
+                canvas: document.getElementById('canvas'),
+                path: "assets/test-image.png",
+                momentum: true,
+                zoomMax: 2,
+                doubletap: true,
+                onZoomEnd: function (zoom, zoomed) {
+                    console.log("---> is zoomed: %s", zoomed);
+                    console.log("---> zoom end at %s", zoom);
+                },
+                onZoom: function (zoom) {
+                    console.log("---> zoom is %s", zoom);
+                }
+            });
     </script>
 </body>
