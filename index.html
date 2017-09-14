@@ -109,10 +109,10 @@
         var dragging = false
         var timeout = true
         var pinch = false
-        var x = 250
-        var y = 150
-        var sizeX = 50
-        var sizeY = 37
+        var x = canvasWidth * .45
+        var y = canvasHeight * .45
+        var sizeX = canvasWidth * .1
+        var sizeY = canvasHeight * .1
 
         hammertime.on('pinchin', (ev) => {
             console.log(ev)
