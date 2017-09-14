@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="touch-emulator.js"></script>
     <script src="hammerjs.js"></script>
+    <script src="filesaverjs.js"></script>
 
     <!-- <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
     <script src="https://rawgit.com/flysonic10/aframe-passthrough/master/dist/aframe-passthrough-component.min.js"></script> -->
@@ -17,6 +18,8 @@
 <body>
     <video autoplay id="videoElement" style="display: none"></video>
     <input type="button" value="Save" id="save" />
+    <button type="button" onclick="captureImage()">Capture Image</button>
+    <button type="button" onclick="showLive()">Show Live</button>
     <div id="stage">
         <canvas id="canvas"></canvas>
         <!-- <div id="container">
@@ -27,7 +30,7 @@
     <!-- Used to capture frame from webcam video feed -->
 
     <!-- Or alternatively added to an img tag -->
-    <img id="imgtag" src="" width="500" height="375" alt="capture" />
+    <img id="imgtag" src="" alt="capture" />
     <!-- <img src="http://res.cloudinary.com/dvh7zccln/image/upload/v1504733715/14-tattoo-png-image_qd9leq.png" alt=""> -->
     <script>
         TouchEmulator()
@@ -35,6 +38,8 @@
         var pinch = new Hammer.Pinch()
         hammertime.get('pinch').set({ enable: true });
         var video = document.querySelector("#videoElement");
+        var localStream
+        var run = true
 
         // check for getUserMedia support
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
@@ -45,6 +50,7 @@
         }
 
         function handleVideo(stream) {
+            localStream = stream
             // if found attach feed to video element
             video.src = window.URL.createObjectURL(stream);
             update()
@@ -72,10 +78,10 @@
 
             if (v.paused || v.ended) return false; // if no video, exit here
 
-            // context.drawImage(v, 0, 0, w, h); // draw video feed to canvas
+            context.drawImage(v, 0, 0, w, h); // draw video feed to canvas
 
             var uri = canvas.toDataURL("image/png"); // convert canvas to data URI
-
+            // context.drawImage(uri, 0, 0, canvasWidth, canvasHeight)
             // console.log(uri); // uncomment line to log URI for testing
 
             imgtag.src = uri; // add URI to IMG tag src
@@ -93,18 +99,23 @@
         var canvasHeight = canvasWidth * .75
         canvas.setAttribute('width', canvasWidth)
         canvas.setAttribute('height', canvasHeight)
+
         function update() {
-            context.drawImage(video, 0, 0, canvasWidth, canvasHeight)
-            requestAnimationFrame(update)
+            if (run) {
+                context.drawImage(video, 0, 0, canvasWidth, canvasHeight)
+                requestAnimationFrame(update)
+            }
         }
 
         function insertImage() {
-            var overlay = document.getElementById('overlay')
-            context.drawImage(overlay, x, y, sizeX, sizeY)
-            var image2 = new Image()
-            image2.src = "assets/test-image.png"
-            // context.drawImage(image2, 100, 100, 70, 50)
-            requestAnimationFrame(insertImage)
+            if (run) {
+                var overlay = document.getElementById('overlay')
+                context.drawImage(overlay, x, y, sizeX, sizeY)
+                // var image2 = new Image()
+                // image2.src = "assets/test-image.png"
+                // context.drawImage(image2, 100, 100, 70, 50)
+                requestAnimationFrame(insertImage)
+            }
         }
         var dragging = false
         var timeout = true
@@ -121,7 +132,7 @@
             x -= 4
             y -= 2
             var overlay = document.getElementById('overlay')
-            context.clearRect(0, 0, 500, 375)
+            context.clearRect(0, 0, canvasWidth, canvasHeight)
             context.drawImage(overlay, x, y, sizeX, sizeY)
 
         })
@@ -135,6 +146,25 @@
             context.clearRect(0, 0, 500, 375)
             context.drawImage(overlay, x, y, sizeX, sizeY)
         })
+
+        function captureImage() {
+            var uri = canvas.toDataURL("image/png")
+            imgtag.src = uri
+            // console.log(uri)
+            run = false
+            localStream.getVideoTracks()[0].stop()
+            canvas.toBlob((blob) => {
+                saveAs(blob, "test capture.png")
+            })
+            // setTimeout(console.log("done"), 10000)
+            // setTimeout(context.drawImage(imgtag, x, y, sizeX, sizeY), 10000)
+            // context.drawImage(imgtag, x, y, sizeX, sizeY)
+        }
+
+        function showLive() {
+            run = true
+            navigator.getUserMedia({ video: true }, handleVideo, videoError)
+        }
 
         // document.getElementById('canvas').addEventListener('gesturestart', function (e) {
         //     pinch = true
