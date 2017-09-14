@@ -7,33 +7,31 @@
     <!-- <meta name="description" content="360&deg; Image Gallery - A-Frame"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="stylesheet" href="style.css">
-    <script src="touch-emulator.js"></script>
+    <!-- <script src="touch-emulator.js"></script> -->
     <script src="hammerjs.js"></script>
     <script src="filesaverjs.js"></script>
-
-    <!-- <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
-    <script src="https://rawgit.com/flysonic10/aframe-passthrough/master/dist/aframe-passthrough-component.min.js"></script> -->
 </head>
 
 <body>
     <video autoplay id="videoElement" style="display: none"></video>
-    <input type="button" value="Save" id="save" />
-    <button type="button" onclick="captureImage()">Capture Image</button>
-    <button type="button" onclick="showLive()">Show Live</button>
+    <!-- <input type="button" value="Save" id="save" /> -->
+    <div id="controls">
+        <button type="button" onclick="captureImage()">Capture Image</button>
+        <button type="button" onclick="showLive()">Show Live</button>
+    </div>
     <div id="stage">
         <canvas id="canvas"></canvas>
         <!-- <div id="container">
             <canvas id="img-overlay"></canvas>
         </div> -->
     </div>
-    <img id="overlay" style="display: none" src="assets/test-image.png" alt="">
+    <img id="overlay" style="display: none" src="test-image.png" alt="">
     <!-- Used to capture frame from webcam video feed -->
 
     <!-- Or alternatively added to an img tag -->
-    <img id="imgtag" src="" alt="capture" />
+    <img id="imgtag" style="display: none" src="" alt="capture" />
     <!-- <img src="http://res.cloudinary.com/dvh7zccln/image/upload/v1504733715/14-tattoo-png-image_qd9leq.png" alt=""> -->
     <script>
-        TouchEmulator()
         var hammertime = new Hammer((document.getElementById('canvas')));
         var pinch = new Hammer.Pinch()
         hammertime.get('pinch').set({ enable: true });
@@ -87,11 +85,11 @@
             imgtag.src = uri; // add URI to IMG tag src
         }
 
-        document.getElementById('save').addEventListener('click', function (e) {
+        // document.getElementById('save').addEventListener('click', function (e) {
 
-            draw(v, context, w, h); // when save button is clicked, draw video feed to canvas
+        //     draw(v, context, w, h); // when save button is clicked, draw video feed to canvas
 
-        });
+        // });
 
         var canvas = document.getElementById('canvas')
         var context = canvas.getContext("2d")
@@ -153,17 +151,39 @@
             // console.log(uri)
             run = false
             localStream.getVideoTracks()[0].stop()
-            canvas.toBlob((blob) => {
-                saveAs(blob, "test capture.png")
+            var button = document.createElement("button")
+            button.innerHTML = "Save Image"
+            button.id = 'save-button'
+            button.addEventListener('click', function () {
+                canvas.toBlob((blob) => {
+                    saveAs(blob, "test capture.png")
+                })
+                document.getElementById('save-button').remove()
+                showLive()
             })
+            var addTo = document.getElementById('controls')
+            addTo.appendChild(button)
+            // canvas.toBlob((blob) => {
+            //     saveAs(blob, "test capture.png")
+            // })
             // setTimeout(console.log("done"), 10000)
             // setTimeout(context.drawImage(imgtag, x, y, sizeX, sizeY), 10000)
             // context.drawImage(imgtag, x, y, sizeX, sizeY)
         }
 
+        // function saveImage() {
+        //     canvas.toBlob((blob) => {
+        //         saveAs(blob, "test capture.png")
+        //     })
+        // }
+
         function showLive() {
             run = true
             navigator.getUserMedia({ video: true }, handleVideo, videoError)
+            var button = document.getElementById('save-button')
+            if (button) {
+                document.getElementById('save-button').remove()
+            }
         }
 
         // document.getElementById('canvas').addEventListener('gesturestart', function (e) {
@@ -242,26 +262,6 @@
             //     imgtag.src = fr.result;
             // }
     </script>
-    <!-- <script src="img-touch-canvas.js"></script> -->
-    <!-- <script>
-        var gesturableImg = new ImgTouchCanvas({
-            canvas: document.getElementById('img-overlay'),
-            path: "assets/test-image.png"
-        });
-    </script> -->
-    <!-- <script src="impetus.js"></script>
-        <script src="pinch.js"></script> -->
-    <!-- <script>
-            var pinchZoom = new PinchZoomCanvas({
-                canvas: document.getElementById('img-overlay'),
-                path: "assets/test-image.png",
-                momentum: true,
-                zoomMax: 2,
-                doubletap: true,
-                onZoomEnd: function (zoom, zoomed) {
-                    console.log("is zoomed: %s", zoomed); console.log(" zoom end at %s", zoom); }, onZoom: function (zoom) { console.log(" zoom
-    is %s", zoom); } });
-    </script> -->
 </body>
 
 </html>
