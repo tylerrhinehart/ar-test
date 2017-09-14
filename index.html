@@ -16,15 +16,15 @@
 
 <body>
     <video autoplay id="videoElement" style="display: none"></video>
+    <input type="button" value="Save" id="save" />
     <div id="stage">
-        <canvas id="canvas" width="500" height="375"></canvas>
+        <canvas id="canvas"></canvas>
         <!-- <div id="container">
             <canvas id="img-overlay"></canvas>
         </div> -->
     </div>
     <img id="overlay" style="display: none" src="assets/test-image.png" alt="">
     <!-- Used to capture frame from webcam video feed -->
-    <input type="button" value="Save" id="save" />
 
     <!-- Or alternatively added to an img tag -->
     <img id="imgtag" src="" width="500" height="375" alt="capture" />
@@ -89,8 +89,12 @@
 
         var canvas = document.getElementById('canvas')
         var context = canvas.getContext("2d")
+        var canvasWidth = document.body.clientWidth * .90
+        var canvasHeight = canvasWidth * .75
+        canvas.setAttribute('width', canvasWidth)
+        canvas.setAttribute('height', canvasHeight)
         function update() {
-            context.drawImage(video, 0, 0, 500, 375)
+            context.drawImage(video, 0, 0, canvasWidth, canvasHeight)
             requestAnimationFrame(update)
         }
 
