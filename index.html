@@ -5,8 +5,10 @@
     <meta charset="utf-8">
     <title>AR Sandbox</title>
     <!-- <meta name="description" content="360&deg; Image Gallery - A-Frame"> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="stylesheet" href="style.css">
+    <script src="touch-emulator.js"></script>
+    <script src="hammerjs.js"></script>
 
     <!-- <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
     <script src="https://rawgit.com/flysonic10/aframe-passthrough/master/dist/aframe-passthrough-component.min.js"></script> -->
@@ -28,6 +30,10 @@
     <img id="imgtag" src="" width="500" height="375" alt="capture" />
     <!-- <img src="http://res.cloudinary.com/dvh7zccln/image/upload/v1504733715/14-tattoo-png-image_qd9leq.png" alt=""> -->
     <script>
+        TouchEmulator()
+        var hammertime = new Hammer((document.getElementById('canvas')));
+        var pinch = new Hammer.Pinch()
+        hammertime.get('pinch').set({ enable: true });
         var video = document.querySelector("#videoElement");
 
         // check for getUserMedia support
@@ -104,41 +110,63 @@
         var sizeX = 50
         var sizeY = 37
 
-        document.getElementById('canvas').addEventListener('gesturestart', function (e) {
-            pinch = true
-            console.log(e)
+        hammertime.on('pinchin', (ev) => {
+            console.log(ev)
+            sizeX += 4
+            sizeY += 2
+            x -= 4
+            y -= 2
+            var overlay = document.getElementById('overlay')
+            context.clearRect(0, 0, 500, 375)
+            context.drawImage(overlay, x, y, sizeX, sizeY)
+
         })
-        document.getElementById('canvas').addEventListener('gesturechange', function (e) {
-            if (e.scale < 1.0 && pinch) {
-                sizeX -= 4
-                sizeY -= 2
-                x += 4
-                y += 2
-                var overlay = document.getElementById('overlay')
-                context.clearRect(0, 0, 500, 375)
-                context.drawImage(overlay, x, y, sizeX, sizeY)
-                timeout = false
-                setTimeout(function () {
-                    timeout = true
-                }, 1000 / 30)
-            } else if (e.scale > 1.0 && pinch) {
-                sizeX += 4
-                sizeY += 2
-                x -= 4
-                y -= 2
-                var overlay = document.getElementById('overlay')
-                context.clearRect(0, 0, 500, 375)
-                context.drawImage(overlay, x, y, sizeX, sizeY)
-                timeout = false
-                setTimeout(function () {
-                    timeout = true
-                }, 1000 / 30)
-            }
+        hammertime.on('pinchout', (ev) => {
+            console.log(ev)
+            sizeX -= 4
+            sizeY -= 2
+            x += 4
+            y += 2
+            var overlay = document.getElementById('overlay')
+            context.clearRect(0, 0, 500, 375)
+            context.drawImage(overlay, x, y, sizeX, sizeY)
         })
-        document.getElementById('canvas').addEventListener('gestureend', function (e) {
-            pinch = false
-            console.log(e)
-        })
+
+        // document.getElementById('canvas').addEventListener('gesturestart', function (e) {
+        //     pinch = true
+        //     console.log(e)
+        // })
+        // document.getElementById('canvas').addEventListener('gesturechange', function (e) {
+        //     if (e.scale < 1.0 && pinch) {
+        //         sizeX -= 4
+        //         sizeY -= 2
+        //         x += 4
+        //         y += 2
+        //         var overlay = document.getElementById('overlay')
+        //         context.clearRect(0, 0, 500, 375)
+        //         context.drawImage(overlay, x, y, sizeX, sizeY)
+        //         timeout = false
+        //         setTimeout(function () {
+        //             timeout = true
+        //         }, 1000 / 30)
+        //     } else if (e.scale > 1.0 && pinch) {
+        //         sizeX += 4
+        //         sizeY += 2
+        //         x -= 4
+        //         y -= 2
+        //         var overlay = document.getElementById('overlay')
+        //         context.clearRect(0, 0, 500, 375)
+        //         context.drawImage(overlay, x, y, sizeX, sizeY)
+        //         timeout = false
+        //         setTimeout(function () {
+        //             timeout = true
+        //         }, 1000 / 30)
+        //     }
+        // })
+        // document.getElementById('canvas').addEventListener('gestureend', function (e) {
+        //     pinch = false
+        //     console.log(e)
+        // })
 
             // document.getElementById('canvas').addEventListener('mousedown', function (e) {
             //     dragging = true
